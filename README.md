@@ -1,7 +1,7 @@
 # go_pool
  go协程池，简单，容易使用
 
-调用方式1
+单参数调用
    
     //协程数量
     var num int64=10
@@ -13,8 +13,9 @@
 		fmt.Println(err.Error())
 		return
 	}
+	time.Sleep(time.Second)
 	
-调用方式2
+多参数调用
     
     //协程数量
     var num int64=10
@@ -26,8 +27,9 @@
 		fmt.Println(err.Error())
 		return
 	}
+	time.Sleep(time.Second)
 	
-调用方式3
+结构体参数调用
 
     //协程数量
     var num int64=10
