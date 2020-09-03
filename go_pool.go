@@ -12,10 +12,9 @@ import (
 */
 
 type Work struct {
-	useNum     int64 //使用数量
-	residueNum int64 //剩余数量
-	totalNum   int64 //总数量
-	pool       chan obj
+	usable   int64 //可用数量
+	totalNum int64 //总数量
+	pool     chan obj
 }
 
 type obj struct {
@@ -27,11 +26,11 @@ type obj struct {
 /*
 	初始化池
 */
-func Init(num int) *Work {
+func Init(num int64) *Work {
 	work := &Work{}
 	work.pool = make(chan obj, num)
-	for i := 0; i < num; i++ {
-		work.totalNum++
+	work.totalNum = num
+	for i := int64(0); i < num; i++ {
 		go work.run()
 	}
 	return work
@@ -44,7 +43,9 @@ func (this *Work) run() {
 	for ; ; {
 		select {
 		case fun := <-this.pool:
+			this.usable++
 			fun.callFunc()
+			this.usable--
 		}
 	}
 }
@@ -127,4 +128,20 @@ func (this *Work) runGo(wg *sync.WaitGroup, fun interface{}, value []reflect.Val
 	funObj.Fun = funcValue.Call
 	funObj.val = value
 	this.pool <- funObj
+}
+
+/*
+	可用的协程数量
+*/
+func (this *Work) GetUsableNum() int64 {
+	num := this.usable
+	return num
+}
+
+/*
+	协程总数量
+*/
+func (this *Work) GetTotalNum() int64 {
+	num := this.totalNum
+	return num
 }
