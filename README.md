@@ -1,6 +1,60 @@
 # go_pool
  go协程池，简单，容易使用
 
+测试方法
+
+    func F0() {
+    	fmt.Println("哈哈")
+    }
+
+    func F1(name string) {
+    	fmt.Println(name)
+    }
+    
+    func F2(name string, age int) {
+    	fmt.Println(name, age)
+    }
+    
+    type user struct {
+    	name string
+    	age  int
+    }
+    
+    func F3(u user) {
+    	fmt.Println(u)
+    }
+
+无参数调用
+   
+    //协程数量
+    var num int64=10
+    //初始化协程池
+    pool := Init(num)
+    //调用方法
+    err := pool.Add(nil, F0)
+    if err != nil {
+        fmt.Println(err.Error())
+        return
+    }
+     time.Sleep(time.Second)
+
+内部方法调用
+
+    //协程数量
+    var num int64=10
+    //初始化协程池
+    pool := Init(num)
+    inFunc:= func() {
+        fmt.Println("内部方法")
+    }
+    //调用方法
+    err := pool.Add(nil, inFunc)
+    if err != nil {
+        fmt.Println(err.Error())
+        return
+    }
+     time.Sleep(time.Second)
+
 单参数调用
    
     //协程数量
@@ -29,7 +83,7 @@
 	}
 	time.Sleep(time.Second)
 	
-结构体参数调用
+结构体参数调用，并使用协程同步
 
     //协程数量
     var num int64=10
@@ -50,24 +104,6 @@
 
 	wg.Wait()
 	
-测试方法
-
-    func F1(name string) {
-    	fmt.Println(name)
-    }
-    
-    func F2(name string, age int) {
-    	fmt.Println(name, age)
-    }
-    
-    type user struct {
-    	name string
-    	age  int
-    }
-    
-    func F3(u user) {
-    	fmt.Println(u)
-    }
 	
 ~~~~
 作者：tom
